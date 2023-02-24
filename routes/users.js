@@ -9,4 +9,14 @@ router.post("/createUser", async (req, res) => {
   res.send(user);
 });
 
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email: email });
+  if (!user) return res.status(400).send({ err: "invalid email or pass" });
+
+  if (user.password !== password)
+    return res.status(400).send({ err: "invalid email or pass" });
+
+  res.send(user);
+});
 module.exports = router;
