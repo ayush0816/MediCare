@@ -25,7 +25,6 @@ module.exports = mongoose.model("User", {
   password: {
     type: String,
     required: true,
-    trim: true,
   },
   ventilator_cnt: {
     type: Number,
