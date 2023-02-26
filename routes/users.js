@@ -3,6 +3,7 @@ const user = require("../models/user.js");
 const router = express.Router();
 const User = require("../models/user.js");
 const bcrypt = require("bcrypt");
+const sendMail = require("../sendMail.js");
 const jwt = require("jsonwebtoken");
 const auth = require("../middleware/auth");
 
@@ -22,6 +23,7 @@ router.post("/createUser", async (req, res) => {
     ventilator_cnt: ventilator_cnt,
   });
   await user.save();
+  sendMail.sendWelcomeMail(req.body.email);
   const token = jwt.sign({ id: user._id }, "ayushsingh");
   res.send(token);
 });
@@ -59,24 +61,22 @@ router.patch("/update", auth, async (req, res) => {
         for (var i in sellersList) {
           sellersList1.push(sellersList[i].email);
         }
-        // sendMail.Notification_of_buyers(
-        //   sellersList1,
-        //   req.user.email,
-        //   req.body[updat]
-        // );
-        res.send(sellersList1);
+        sendMail.Notification_of_buyers(
+          sellersList1,
+          req.user.email,
+          req.body[updat]
+        );
       } else if (updat == allowedUpdates[3] && req.user.category == "seller") {
         const buyersList1 = [];
         const buyersList = await User.find({ category: "buyer" });
         for (var i in buyersList) {
           buyersList1.push(buyersList[i].email);
         }
-        // sendMail.Notification_of_sellers(
-        //   buyersList1,
-        //   req.user.email,
-        //   req.body[updat]
-        // );
-        res.send(buyersList1);
+        sendMail.Notification_of_sellers(
+          buyersList1,
+          req.user.email,
+          req.body[updat]
+        );
       }
     });
     await req.user.save();

@@ -1,20 +1,21 @@
 const nodemailer = require("nodemailer");
 var smtpTransport = require("nodemailer-smtp-transport");
 
-var transporter = nodemailer.createTransport(
-  smtpTransport({
-    service: "gmail",
-    host: "smtp.gmail.com",
-    auth: {
-      user: "limitedmedicare@gmail.com",
-      pass: process.env.PASSWORD,
-    },
-  })
-);
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  secure: "false",
+  auth: {
+    user: "jujutsuxxy2901@gmail.com",
+    pass: "lsrjdnlnsotbmecd",
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
 
 const sendWelcomeMail = function (email) {
   var mailOptions = {
-    from: "limitedmedicare@gmail.com",
+    from: "jujutsuxxy2901@gmail.com",
     to: email,
     subject: "Welcome to our family of medicare",
     text: "We on behalf of medicare limited heartily welcome you in our family.",
@@ -30,7 +31,7 @@ const sendWelcomeMail = function (email) {
 
 const Notification_of_buyers = function (email_List, buyers_email, buyers_cnt) {
   var mailOptions = {
-    from: "limitedmedicare@gmail.com",
+    from: "jujutsuxxy2901@gmail.com",
     to: email_List,
     subject: "Notification of new requirement",
     text:
@@ -55,7 +56,7 @@ const Notification_of_sellers = function (
   seller_cnt
 ) {
   var mailOptions = {
-    from: "limitedmedicare@gmail.com",
+    from: "jujutsuxxy2901@gmail.com",
     to: email_List,
     subject: "Notification for ventilators availabity",
     text:
