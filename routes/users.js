@@ -4,6 +4,7 @@ const router = express.Router();
 const User = require("../models/user.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const auth = require("../middleware/auth");
 
 router.post("/createUser", async (req, res) => {
   const { category, name, email, password, phone_no, ventilator_cnt } =
@@ -48,6 +49,40 @@ router.patch("/update", auth, async (req, res) => {
   const isvalidUpdate = update.every((updat) => allowedUpdates.includes(updat));
   if (!isvalidUpdate) {
     return res.status(404).send("Invalid Updates");
+  }
+  try {
+    update.forEach(async (updat) => {
+      req.user[updat] = req.body[updat];
+      if (updat == allowedUpdates[3] && req.user.category == "buyer") {
+        const sellersList1 = [];
+        const sellersList = await User.find({ category: "seller" });
+        for (var i in sellersList) {
+          sellersList1.push(sellersList[i].email);
+        }
+        // sendMail.Notification_of_buyers(
+        //   sellersList1,
+        //   req.user.email,
+        //   req.body[updat]
+        // );
+        res.send(sellersList1);
+      } else if (updat == allowedUpdates[3] && req.user.category == "seller") {
+        const buyersList1 = [];
+        const buyersList = await User.find({ category: "buyer" });
+        for (var i in buyersList) {
+          buyersList1.push(buyersList[i].email);
+        }
+        // sendMail.Notification_of_sellers(
+        //   buyersList1,
+        //   req.user.email,
+        //   req.body[updat]
+        // );
+        res.send(buyersList1);
+      }
+    });
+    await req.user.save();
+    res.send(req.user);
+  } catch (e) {
+    res.status(404).send(e);
   }
 });
 module.exports = router;
