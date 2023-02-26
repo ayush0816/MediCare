@@ -35,4 +35,19 @@ router.post("/login", async (req, res) => {
   const token = jwt.sign({ id: user._id }, "ayushsingh");
   res.send(token);
 });
+
+router.patch("/update", auth, async (req, res) => {
+  const update = Object.keys(req.body);
+  const allowedUpdates = [
+    "name",
+    "email",
+    "password",
+    "ventilator_cnt",
+    "phone_no",
+  ];
+  const isvalidUpdate = update.every((updat) => allowedUpdates.includes(updat));
+  if (!isvalidUpdate) {
+    return res.status(404).send("Invalid Updates");
+  }
+});
 module.exports = router;
